@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>BMI Calculator | Calculate Body Mass Index Instantly</title>
+    <meta name="description" content="Calculate your Body Mass Index (BMI) instantly. Get instant results with health category classification. Free online BMI calculator.">
+    <meta name="keywords" content="BMI calculator, body mass index, BMI calculation, healthy weight">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="BMI Calculator | Calculate Body Mass Index Instantly">
+    <meta property="og:description" content="Calculate your Body Mass Index (BMI) instantly with health category classification.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bmi-calculator.vercel.app/">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BMI Calculator">
+    <meta name="twitter:description" content="Calculate your Body Mass Index (BMI) instantly.">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://bmi-calculator.vercel.app/">
+    
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent: #3b82f6;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --underweight: #3b82f6;
+            --normal: #10b981;
+            --overweight: #f59e0b;
+            --obese: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .unit-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .toggle-btn {
+            padding: 0.5rem 1.5rem;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .toggle-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .calculator-container {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1.125rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .unit-badge {
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            min-width: 60px;
+        }
+
+        .calculate-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .calculate-btn:hover {
+            background: #2563eb;
+        }
+
+        .result-container {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            display: none;
+        }
+
+        .result-container.visible {
+            display: block;
+        }
+
+        .bmi-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .bmi-category {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            display: inline-block;
+        }
+
+        .bmi-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .reference-table {
+            margin-top: 2rem;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .reference-table th,
+        .reference-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .reference-table th {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .reference-table td {
+            color: var(--text-secondary);
+        }
+
+        .reference-table .category-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .category-underweight {
+            background: #dbeafe;
+            color: var(--underweight);
+        }
+
+        .category-normal {
+            background: #d1fae5;
+            color: var(--normal);
+        }
+
+        .category-overweight {
+            background: #fef3c7;
+            color: var(--overweight);
+        }
+
+        .category-obese {
+            background: #fee2e2;
+            color: var(--obese);
+        }
+
+        .disclaimer {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .bmi-value {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚖️ BMI Calculator</h1>
+            <p class="subtitle">Calculate your Body Mass Index instantly</p>
+        </header>
+
+        <main>
+            <div class="unit-toggle">
+                <button class="toggle-btn active" data-unit="metric">Metric (kg/cm)</button>
+                <button class="toggle-btn" data-unit="imperial">Imperial (lb/ft)</button>
+            </div>
+
+            <div class="calculator-container">
+                <div class="input-group">
+                    <label class="input-label" for="height">Height</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="height" placeholder="Enter height" step="0.1" min="0">
+                        <span class="unit-badge" id="height-unit">cm</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="weight">Weight</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="weight" placeholder="Enter weight" step="0.1" min="0">
+                        <span class="unit-badge" id="weight-unit">kg</span>
+                    </div>
+                </div>
+
+                <button class="calculate-btn" id="calculate-btn">Calculate BMI</button>
+            </div>
+
+            <div class="result-container" id="result-container">
+                <div class="bmi-value" id="bmi-value">--</div>
+                <div class="bmi-category" id="bmi-category">--</div>
+                <p class="bmi-description" id="bmi-description">--</p>
+            </div>
+
+            <table class="reference-table">
+                <thead>
+                    <tr>
+                        <th>BMI Range</th>
+                        <th>Category</th>
+                        <th>Health Risk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Below 18.5</td>
+                        <td><span class="category-badge category-underweight">Underweight</span></td>
+                        <td>Low body weight</td>
+                    </tr>
+                    <tr>
+                        <td>18.5 - 24.9</td>
+                        <td><span class="category-badge category-normal">Normal</span></td>
+                        <td>Healthy weight</td>
+                    </tr>
+                    <tr>
+                        <td>25.0 - 29.9</td>
+                        <td><span class="category-badge category-overweight">Overweight</span></td>
+                        <td>Increased risk</td>
+                    </tr>
+                    <tr>
+                        <td>30.0 and above</td>
+                        <td><span class="category-badge category-obese">Obese</span></td>
+                        <td>High risk</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="disclaimer">
+                ⚠️ BMI is a general indicator and does not account for muscle mass, bone density, age, or other factors. Consult a healthcare professional for personalized advice.
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>Instant results • Free calculator • No registration required</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
